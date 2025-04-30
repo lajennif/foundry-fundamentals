@@ -14,11 +14,10 @@ contract FundMe {
     mapping(address => uint256) public s_addressToAmountFunded;
     address[] public s_funders;
 
-    /** Getter Functions */
-
-    function getAddressToAmountFunded(
-        address fundingAddress
-    ) public view returns (uint256) {
+    /**
+     * Getter Functions
+     */
+    function getAddressToAmountFunded(address fundingAddress) public view returns (uint256) {
         return s_addressToAmountFunded[fundingAddress];
     }
 
@@ -37,10 +36,7 @@ contract FundMe {
     }
 
     function fund() public payable {
-        require(
-            msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
-            "You need to spend more ETH!"
-        );
+        require(msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD, "You need to spend more ETH!");
         // require(PriceConverter.getConversionRate(msg.value) >= MINIMUM_USD, "You need to spend more ETH!");
         s_addressToAmountFunded[msg.sender] += msg.value;
         s_funders.push(msg.sender);
@@ -77,11 +73,7 @@ contract FundMe {
     // }
 
     function withdraw() public onlyOwner {
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < s_funders.length;
-            funderIndex++
-        ) {
+        for (uint256 funderIndex = 0; funderIndex < s_funders.length; funderIndex++) {
             address funder = s_funders[funderIndex];
             s_addressToAmountFunded[funder] = 0;
         }
@@ -94,21 +86,16 @@ contract FundMe {
         // require(sendSuccess, "Send failed");
 
         // call
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: address(this).balance
-        }("");
+        (bool callSuccess,) = payable(msg.sender).call{value: address(this).balance}("");
         require(callSuccess, "Call failed");
     }
+
     function cheaperWithdraw() public onlyOwner {
         uint256 fundersLength = s_funders.length;
 
         console.log("Funders Length: ", fundersLength);
 
-        for (
-            uint256 funderIndex = 0;
-            funderIndex < fundersLength;
-            funderIndex++
-        ) {
+        for (uint256 funderIndex = 0; funderIndex < fundersLength; funderIndex++) {
             address funder = s_funders[funderIndex];
             console.log("Resetting funder: ", funder);
             s_addressToAmountFunded[funder] = 0;
@@ -120,14 +107,9 @@ contract FundMe {
 
         // Check contract balance before withdrawal
         uint256 contractBalanceBefore = address(this).balance;
-        console.log(
-            "Contract balance before withdraw: ",
-            contractBalanceBefore
-        );
+        console.log("Contract balance before withdraw: ", contractBalanceBefore);
 
-        (bool callSuccess, ) = payable(msg.sender).call{
-            value: contractBalanceBefore
-        }("");
+        (bool callSuccess,) = payable(msg.sender).call{value: contractBalanceBefore}("");
 
         require(callSuccess, "Call failed");
         console.log("Funds successfully transferred to owner");

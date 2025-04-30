@@ -22,6 +22,7 @@ contract InteractionTest is Test {
         fundMe = deploy.run();
         vm.deal(USER, STARTING_BALANCE);
     }
+
     function testUserCanFundInteractions() public {
         FundFundMe fundFundMe = new FundFundMe();
         fundFundMe.fundFundMe(address(fundMe));
