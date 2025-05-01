@@ -1,2 +1,14 @@
 {
+  "editor.formatOnSave": false,
+
+  // Forge formatting on Solidity file save
+  "emeraldwalk.runonsave": {
+    "commands": [
+      {
+        "match": "\\.sol$",
+        "cmd": "forge fmt"
+      }
+    ]
+  }
 }
+
